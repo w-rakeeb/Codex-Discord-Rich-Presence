@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" data-theme="dim">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
+  <title>Codex Discord Rich Presence</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar" aria-label="Main navigation">
+      <ul class="menu" id="navigation"></ul>
+      <div class="sidebar-bottom mt-auto pt-6">
+        <button class="btn btn-sm background-button w-full" data-command="background" aria-label="Run in background" title="Keep monitoring in the background"><span id="background-icon"></span><span class="sidebar-footer-copy">Run in background</span></button>
+        <div class="sidebar-presence card card-border bg-base-200" role="status" aria-live="polite" aria-atomic="true">
+          <span id="sidebar-status" class="status status-sm" aria-hidden="true"></span><span id="sidebar-state" class="publication-label text-xs font-medium">Presence hidden</span>
+        </div>
+      </div>
+    </aside>
+    <main class="app-main">
+      <div class="page-scroll" id="scroll"><div class="page-content" id="page"><div class="p-8 muted" role="status">Loading your workspace…</div></div></div>
+      <div id="save-strip" class="save-strip" hidden></div>
+      <footer class="footer-strip" role="status" aria-live="polite"><span id="footer-dot" class="status status-xs"></span><span id="footer-text">Starting Codex Presence…</span></footer>
+    </main>
+  </div>
+  <ul id="engine-actions" popover class="dropdown menu bg-base-100 border border-base-content/10 rounded-box w-56 p-2 shadow-xl" aria-label="Engine actions"><li><button data-command="background">Run in background</button></li><li><button data-command="exit" class="text-error">Exit Presence</button></li></ul>
+  <dialog class="modal" id="decision"><div class="modal-box" id="decision-body"></div></dialog>
+  <div class="toast toast-end toast-bottom" id="toasts" role="status" aria-live="polite"></div>
+</body>
+</html>

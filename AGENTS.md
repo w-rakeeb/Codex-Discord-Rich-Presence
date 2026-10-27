@@ -1,0 +1,79 @@
+# Codex Discord Rich Presence Agents Guide
+
+This repo ships a Rust Discord Rich Presence runtime for Codex. Work from source and tests. Do not use GitNexus unless Wrakeeb explicitly requests it.
+
+## Product Contract
+
+| Area | Contract |
+|:---|:---|
+| Discord title | Default: `Codex CLI`, `Codex VS Code Extension`, or the selected desktop design: `Codex App` / `ChatGPT App`. An explicitly selected activity/project heading may replace its displayed title; application identity and assets stay unchanged. |
+| Identity policy | Default mode retains compatible public application IDs and the approved product artwork. Explicit Custom mode uses the user's validated public Discord Application ID and asset keys on every surface. Keep default IDs and saved custom settings independently recoverable; never accept bot tokens. |
+| Runtime data | Read local Codex session JSONL and global state only |
+| Privacy | No telemetry or cloud storage; only configured presence fields go to Discord; optional update checks send public release requests to GitHub, with no chat data |
+| Release binaries | Windows x64 and ARM64 artifacts live under `releases/windows/` with architecture-qualified filenames |
+
+## Repo Layout
+
+| Path | Purpose |
+|:---|:---|
+| `src/` | Rust runtime, CLI, Discord IPC, TUI, session parser, telemetry, cost model |
+| `tests/integration/` | Cross-module regression tests |
+| `tests/index.md` | Test suite map |
+| `docs/index.md` | Documentation map |
+| `docs/api/` | Runtime and payload contracts |
+| `docs/database/` | Local file and snapshot schemas |
+| `docs/ui/` | Terminal UI behavior |
+| `scripts/` | Build scripts |
+| `assets/branding/` | Codex app images and social assets |
+| `releases/` | Ignored local release outputs |
+| `.build/target/` | Ignored Cargo target dir from `.cargo/config.toml` |
+
+## Commands
+
+| Task | Command |
+|:---|:---|
+| Test all | `cargo test --workspace` |
+| Test integration regressions | `cargo test --test integration` |
+| Format check | `cargo fmt --check` |
+| Lint | `cargo clippy --workspace --all-targets -- -D warnings` |
+| Local verify (all gates) | `pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1` |
+| Release compile | `cargo build --release` |
+| Windows artifacts | `pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/build-release.ps1 -Architecture all` |
+
+`Taskfile.yml` mirrors the core commands for machines with Task installed.
+
+## CI / local verification
+
+Checks run locally. There is no automatic publishing or per-push workflow. Run scripts/verify.ps1, the desktop-updates console tests, verify-web.ps1 and verify-desktop.ps1 before a desktop release. The previous engine-only promotion workflow is not part of this independent desktop repository. See docs/releasing.md.
+
+## Coding Rules
+
+Use the smallest correct change. Keep runtime behavior behind narrow functions and test the public seam when a bug crosses modules.
+
+No comments in new code unless a compiler directive or generated format requires one. Prefer names and structure that explain the code.
+
+Do not add dependencies unless the bug cannot be fixed with the existing stack.
+
+Do not write secrets, tokens, or credentials into config, docs, tests, logs, or commits.
+
+## Testing Rules
+
+Every Discord identity change needs a regression test.
+
+Every model-label change needs a display test for both standard and Fast mode when applicable.
+
+Every pricing catalog change needs a pricing-resolution test and a context-window test when the model belongs to the GPT-5 family.
+
+## Release Rule
+
+Before saying a Windows exe is fixed, run the build script and verify the produced architecture-qualified `releases/windows/codex-discord-rich-presence-windows-x64.exe` with `status` or `doctor`.
+
+Windows Efficiency mode is implemented in src/power.rs and initialized by the binary. CODEX_PRESENCE_EFFICIENCY_MODE=0 opts out. scripts/check-windows-efficiency.ps1 reads process policy without changing it.
+
+## Session-cost ownership
+
+`src/session/costing.rs` owns per-event cost accumulation. Preserve model, speed and cache-write telemetry for each delta. Repeated cumulative events must not add cost. Apply long-context pricing only to an observed request size, never to cumulative session input. Unknown components retain a partial known subtotal. Discord shows currency only when that field is enabled; snapshots retain coverage and provenance.
+
+## Product identity
+
+Name: Codex Discord Rich Presence. Creator: Wrakeeb. Development: vibe coded with AI assistance, verified by tests. Repository: https://github.com/w-rakeeb/Codex-Discord-Rich-Presence. Retain LICENSE and NOTICE.md; keep provenance out of everyday app copy. Preserve the legacy executable filename, namespaces and config formats for upgrade compatibility.

@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>Codex Presence</AssemblyName>
+    <Version>3.3.0</Version>
+    <Product>Codex Discord Rich Presence</Product>
+    <Authors>Wrakeeb</Authors>
+    <Description>Codex session activity for Discord. Vibe coded with AI assistance.</Description>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <StartupObject>CodexPresence.Program</StartupObject>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+    <DebugType>none</DebugType>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <NoWarn>$(NoWarn);WFAC010</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Resource Include="Assets\*.png;Assets\*.ico" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4258.31" />
+    <Content Include="Web\dist\**\*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Link="Web\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Content Include="$(NuGetPackageRoot)microsoft.web.webview2\1.0.4258.31\LICENSE.txt" CopyToPublishDirectory="PreserveNewest" Link="Web\WebView2-LICENSE.txt" />
+    <Content Include="$(NuGetPackageRoot)microsoft.web.webview2\1.0.4258.31\NOTICE.txt" CopyToPublishDirectory="PreserveNewest" Link="Web\WebView2-NOTICE.txt" />
+  </ItemGroup>
+</Project>

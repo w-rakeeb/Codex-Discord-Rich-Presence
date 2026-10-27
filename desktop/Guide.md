@@ -1,0 +1,228 @@
+# Codex Presence 3.3.0
+
+Manual presence now supports an empty optional second line. Windows connection status is based on Discord accepting the activity; rejected payloads and timeouts are reported and reconnect automatically.
+
+# Codex Presence 3.1
+
+The sidebar includes **Manual presence** for a custom activity and timeline. Enter an activity/project line and an optional second line. Choose connection time, last manual update, manual-session start, local clock, or custom timestamps. Custom times use your PC's local time; an optional future End creates a countdown. Save profile keeps these fields without publishing. Start or apply explicitly enables manual mode; Use automatic presence restores real session text. Pause, privacy mode and app priority still apply. Manual mode never resumes automatically on a new engine/app start. Manual profiles live separately in Data/manual-presence.json.
+
+The overflow menu now opens above the page and stays within the window. Sidebar taglines have been removed. Content stretches with the window, resize edges remain native, and background layout/position writes pause during interactive resizing.
+
+# Codex Presence — A to Z
+
+## Desktop 3.0 interface
+
+The sidebar opens Overview, Privacy, Layout, Settings and Tools. Overview pairs engine controls with the exact Discord preview, four usage metrics and a token breakdown. Privacy and Layout place saved output beside the controls on wide windows and above them on small windows. Settings groups are Appearance, Behavior, Startup and Advanced, with a search for the current section.
+
+This version uses actual daisyUI 5 and Tailwind CSS 4 in a local WebView2 interface hosted by the existing Windows app. All styles, scripts, icons and notices are bundled; the interface needs no internet connection. Microsoft Edge WebView2 Runtime is required for the new interface. If it cannot start, the native dashboard remains available with recovery instructions. The background watcher creates no browser until you open the dashboard.
+
+Choose System, Dark or Light in Appearance. System following and window geometry/last tab use `Data/window-state.json`; existing settings files retain their formats. Save/Reload and retained drafts work as before. Discord text is never rewritten by the visual theme. App and tray artwork are local; existing Discord application artwork is unchanged.
+
+Right-click a stat value to copy its full number, or use Copy tokens. Up/Down move between focused sidebar items; Ctrl+1 through Ctrl+5 open a page, and Ctrl+S saves the current draft. Reduced motion and high-contrast resources follow Windows. Complete design and QA limits are in `docs/desktop-design-v3.md` in the source checkout.
+
+## Product artwork and shell
+
+The approved cloud/terminal mark is used for the window, executable, tray, shortcut, in-app preview and current release artwork. The title bar carries the product name once. Live status appears in a framed card at the bottom of the sidebar, above the bordered Run in background button. Compact windows retain named icon controls.
+
+Discord accepts a public HTTPS image URL as a large-image value. Fresh defaults use the release's versioned approved PNG. Existing explicitly configured image choices are preserved. The developer application's own General Information icon is a separate Discord setting.
+
+## Interface recovery and work detection
+
+The modern interface stays active when WebView2 automatically recovers a GPU process. If the browser or main renderer exits, the dashboard rebuilds its web view with up to two automatic attempts. The current tab, unsaved controls and running presence engine are preserved. Reopening a failed dashboard retries initialization. A genuinely unavailable WebView2 installation still uses the native fallback.
+
+Starting the companion detects recent Codex work already in progress. Pending commands use the existing sticky-session window, so longer tools can be detected without another prompt. Idle, completed and stale sessions stay hidden until real work starts. Pause, privacy, manual mode and app priority continue to apply.
+
+## Resizing and accessibility
+
+Cards and form rows reflow at compact window sizes. At higher browser zoom, metrics stack vertically and the sidebar scrolls so every page remains reachable. Live token/context updates preserve keyboard focus, refresh full-value tooltips and update the context warning as usage changes. Confirmation buttons retain focus while monitoring continues.
+
+## Reuse a recent Codex chat in Manual presence
+
+Open **Manual → Presence source → Recent Codex session**. Choose a recent chat or project, choose your timeline, then select **Start or apply manual presence**. The most recent chat appears first. The engine loads the selected chat's full details, including older inactive chats, and uses the same formatter, Layout and Privacy settings as automatic presence. Model, effort, tokens, context and enabled fields are not invented or retyped.
+
+The selected chat stays selected when you work in another chat. Its details update while its session file remains available; if that file disappears during this manual session, its last known details remain until you choose another chat or automatic mode. The preview shows the exact outgoing text. This changes the manual timer only as selected; Pause and app priority still apply.
+
+**Custom text** remains available and your saved text is preserved when you switch sources. Saved profiles do not publish automatically after restarting the app. The recent picker shows up to 30 locally available chats; use **Load Codex sessions** if the engine is stopped.
+
+## Open and start
+
+Extract the release zip, keep its files together and open **Codex Presence.exe**. Keep Discord desktop open, then click **Start presence**. Tools can create a desktop shortcut. Codex activity is detected from local session files. The default home is `%USERPROFILE%\.codex`, or the inherited `CODEX_HOME` environment variable. No Discord token or bot setup is needed.
+
+The first launch stays stopped until you click Start. Default mode uses the original project's Discord application identities and images. You can select your own Application ID in Settings. If another presence engine is running, the app reports that instead of stopping it.
+
+The compact Windows x64 build requires Microsoft's [.NET 8 Desktop Runtime x64](https://dotnet.microsoft.com/en-us/download/dotnet/8.0). The SDK is unnecessary for running the app. The GUI executable and `Runtime` folder belong together. The source repository is distributed separately through GitHub. Windows 11 is tested locally; the app includes Windows 10-compatible controls, font fallbacks and DPI handling, but a real Windows 10 test remains outstanding.
+
+## Overview
+
+- **Start presence / Stop engine:** start the owned engine, or gracefully stop it and clear its Discord activity.
+- **Pause / Resume:** control publication while keeping local monitoring active. The setting persists.
+- **Run in background:** start the engine if needed and hide the dashboard. Discord presence and local monitoring continue. Reopen the executable or double-click the tray icon to return to the same running app.
+- **Exit:** clear the activity, stop the owned engine and exit the app.
+- **Discord preview:** the actual text produced by the original engine's compositor. Discord controls its final profile layout and may take a few seconds to refresh.
+- **Session usage:** total tokens, known cost, input/cached/output tokens, cache ratio, plan and speed.
+- **Active sessions:** project, model, effort, activity, branch, context and cost. The first twelve sessions appear immediately; **Show more sessions** adds the next twelve. Expand a session to load its details, or its complete data for source, timing, policies and provenance.
+- **Limits and credits:** observed usage, reset times and credit balance; expand for every reported quota field.
+- **Metrics:** full cost breakdown, model totals and pricing coverage.
+
+Version 1.4 keeps tabs usable while settings are unsaved. Each edited tab retains its controls, values and scroll position; a dot marks unsaved changes. Saving a tab merges only its changes, preserving settings already saved elsewhere. Dropdowns use WPF's required popup and keyboard hooks. Page fades and repeatedly allocated progress animations are removed. Snapshot parsing and Discord image lookup run away from the UI thread; a hidden dashboard suspends rendering. Discord controls the font and appearance inside its own activity card.
+
+Costs are estimates from available telemetry and configured rates. Missing costs remain unavailable; partial known amounts stay marked partial. A plan label does not grant or change account access. Statistics are scoped to sessions observed by this engine, not a complete account billing history.
+
+Unknown speed, context and numeric values remain **Unavailable** rather than being displayed as Standard or zero. A connection error shows reconnect guidance; the engine retries automatically. Open **Tools** for technical diagnostics. Pause reflects the saved publication setting, including external changes; temporary game priority, idle hiding and monitoring-only mode remain separate.
+
+## Privacy
+
+**Publish Discord presence** is the master publication switch. **Privacy mode** hides session details in Discord. Each visibility checkbox controls a field: chat title/project, branch, model, tokens, cost, limits, credits, context, activity, activity target, systems and custom text. **Show subscription** controls the plan name independently of its price; it is also available in Settings. Click **Save changes** to apply.
+
+Enter your **Custom text**, enable its visibility and save. Custom text is initially disabled. It obeys the master privacy switch and can be placed/reordered through Layout.
+
+Local dashboard information remains visible. The engine reads local session/metadata files; it does not upload transcripts. Discord receives only configured presence fields. Project names, branches and activity targets can reveal work, so review these choices before starting publication. Defaults preserve the original project's defaults.
+
+## Layout
+
+Choose **Codex App** or **ChatGPT App** under **Application heading**. Authoritative session metadata still selects CLI, VS Code or desktop activity. Choose compact or descriptive field labels. **Token label** and **Context label** accept up to 16 characters; their defaults are **TK** and **CTX**. Custom text accepts up to 128 characters. Select the connection's Application ID in Settings → Activity, independently of this heading.
+
+**Use the chat title for the project field** reads the latest name/title from the local Codex thread database, including renames, with the session index as a fallback. Missing titles fall back to the folder name. Disable this option to display folder names. The database is opened read-only, and title changes are checked with each session poll.
+
+Enable each of the eleven fields and use the arrows to reorder them. When grouped layout is off, choose **Details** (first Discord line) or **State** (second line). Grouped layout assigns rows automatically, so these selectors are disabled. Field visibility stays synchronized with Privacy. The compositor fits Discord's text limits; some fields may be omitted when the lines are full. Save to apply on the next poll.
+
+Keep **Group model, tokens and context** enabled for the structured layouts. **Activity/project heading (three rows)** switches between two arrangements:
+
+- **Off (default):** Codex App or ChatGPT App remains the heading. The first text field shows `Thinking - Chat title`; the second shows model/effort followed by `Token: 29.5M - Context: 85% Used`. Discord wraps that lower field as space permits.
+- **On:** `Thinking - Chat title` becomes the heading, model/effort occupies the first text field and token/context occupies the second. The original application ID, artwork and image tooltip stay unchanged.
+
+Both arrangements respect visibility switches and custom labels. Privacy mode restores the normal application heading and hides work details. Long chat titles are fitted separately from model and usage text. Enabled cost, custom text or quota fields may add content to their configured group. Turn grouped layout off for the original fully custom field order; the activity/project heading toggle then has no effect. Discord controls wrapping and typography and cannot provide three custom text fields beneath an additional app heading.
+
+## Settings
+
+Use the **Appearance**, **Activity**, **Background** and **Advanced** section buttons. Switching sections keeps your edits. Save applies the settings across this tab; invalid input opens the relevant section so you can correct it. Appearance previews immediately. **Reload** restores saved appearance and discards this tab's edits.
+
+- **Interface style:** Minimal uses compact outlined cards. Soft uses serif headings and rounder controls. Rounded uses pill controls and borderless cards. Paper uses Cambria headings, ruled sections and a page icon. Studio uses sans-serif headings, outlined rounded cards and a grid icon. All five change typography, spacing, boxes or icons independently of color.
+- **Color mode:** Dark or Light, independent of the interface style. Choose both and click **Save changes**. Appearance changes preserve the active engine and Discord connection.
+- **Color theme:** Neutral retains black and white. Slate uses cool blue, Forest muted green and Dusk warm purple. Each has dark and light variants. Interface style, color theme and color mode are independent; choosing colors does not change the box or typography style.
+- **Discord application:** Default restores the built-in IDs and artwork. Custom uses your public Application ID on every surface, with optional application-specific image keys. Save applies the selection on the next poll and reconnects Discord when necessary; it does not restart monitoring or reset continuous time. Switching to Default keeps your custom ID and keys saved. Invalid custom IDs are rejected with an inline message; they never silently fall back to the original author.
+- **Hide presence when inactive / Hide after (minutes):** enable automatic hiding in Activity and choose 1–1440 minutes. The entire presence clears after Codex is idle or waiting for that long, and returns when work resumes. A long-running command stays active. Without prior activity, a missing session starts the timeout at the first empty poll; an unknown activity falls back to the session's last update. For a session already idle longer than your duration, hiding can happen immediately after saving. The dashboard shows the remaining idle time. Initially disabled, with 5 minutes offered when you enable it. This option does not quit the app or stop local monitoring; manual Pause and app priority remain respected.
+- **Presence timer:** Continuous counts from when this companion app opened and continues through edits, project switches, pauses, reconnects and engine restarts inside the same app session. Closing/reopening the companion begins a new timer. Work / project uses the current session's last activity time and resets with new work. The selection updates without restarting the engine. The terminal launcher receives the same continuous start time when launched from this app.
+- **Hide only the clock while idle or waiting:** the earlier clock-only option remains available independently of automatic presence hiding. It removes the clock immediately for Idle or Waiting for input. Continuous excludes that interval on resume; Work / project uses new work. It does not hide the presence itself. Initially off.
+- **Give games and selected apps priority:** temporarily clears this desktop engine's Discord activity while a matching application runs. Session monitoring, metrics and the engine continue. It restores publication after the priority app closes, while respecting your existing manual Pause setting. Initially off. Checks run locally in a background task every three seconds; priority transitions wake the engine's poll loop.
+- **Detect running Steam games:** uses Steam's local running-app marker when Steam is running; availability depends on the Steam client. Known game executable names are also recognized. Launchers alone do not pause Codex.
+- **Other app executables:** add comma-separated executable names, such as `Spotify.exe, MyGame.exe`. Executable paths and case differences are accepted. A selected process receives priority for its entire running lifetime, even if minimized; this does not inspect whether it is actively publishing another Discord presence. For an unrecognized game, add its executable here. Discord chooses which remaining activity to display; this app cannot reorder another application's presence.
+
+- **Plan:** automatic detection or manual selection: Free, Go, Plus, Pro 5x, Pro 20x, Business, Enterprise or Edu. **Show plan price** hides/shows the price; **Show subscription in Discord** hides/shows the entire plan name in Discord. Local monitoring still displays it.
+- **Codex home:** absolute folder containing Codex sessions. Changing it saves your current configuration in the old home, switches to the new home and loads that home's settings; it does not move sessions or copy credentials.
+- **Poll interval:** 1–60 seconds, default 1 for new preferences. Existing preferences are preserved. A shorter interval detects changes sooner.
+- **Stale cutoff:** 1–86400 seconds, default 90.
+- **Keep active session:** 60–86400 seconds, default 3600.
+- **Keep running when the window closes:** the X hides the dashboard; the engine continues. Reopen the executable or double-click the tray icon to return. Choose Exit to stop everything.
+- **Hide the system tray icon:** remove the icon while the app continues running. Combine with background launch or Run in background for a fully hidden dashboard. Reopen `Codex Presence.exe` to restore the existing window, then choose Exit when you want to stop it.
+- **Startup publication:** the desktop engine detects recent work already in progress, including pending tools within the configured sticky-session window. An idle or completed chat stays hidden until a real Codex prompt or task starts. Background token or metadata updates alone do not count. Your idle timeout, Pause and app priority settings still apply. Reopening the companion checks again for current work.
+- **Start presence when opening:** optional automatic engine launch on future opens.
+- **Open in background and start presence:** future launches start the engine and hide the dashboard automatically. This also starts presence when the separate automatic-start option is off.
+- **Start with Windows:** optional current-user Run entry. Starts the engine in the background at sign-in without showing a window. It takes effect when you save; initially off. Disable it here before moving the app.
+- **Start with Codex / ChatGPT in background:** watch for the ChatGPT or Codex desktop process. Saving enables the watcher immediately and registers this companion to watch at Windows sign-in. Automatic launches stay hidden from the moment the app starts, regardless of the manual-launch preference. An already-open dashboard stays open. It stops an automatically started engine when both hosts close; manually started engines remain running. Exit closes the watcher until you reopen this companion or sign in again. Activity statistics come from Codex sessions; this option does not parse ordinary ChatGPT conversations or detect browser tabs. Initially off.
+- **Monitor locally without publishing:** gives live local data with no Discord activity updates. Restarting the engine applies the choice.
+- **Include WSL:** optional extra session discovery, initially off.
+- **Efficiency mode:** requests Windows EcoQoS and low process priority for the engine. Windows decides whether its leaf icon appears.
+- Efficiency mode uses Below Normal priority so updates remain responsive under load. Git branch queries skip folders outside repositories and time out after 500 ms; a stalled lookup can leave the branch unavailable without blocking presence.
+- **Branding:** every original image key and tooltip, per-activity small-image overrides, plus terminal logo mode/path. Asset keys refer to images available on the original Discord applications; they do not upload images. Terminal logo settings apply to the original terminal interface.
+- **Pricing:** aliases and model rate overrides in JSON. Rates are USD per million tokens. Example below.
+- **Engine information:** the schema and built-in application IDs. These defaults remain available independently of your custom application selection.
+
+```json
+{
+  "aliases": { "my-model-alias": "gpt-5.4" },
+  "overrides": {
+    "my-model": {
+      "input_per_million": 1.0,
+      "cached_input_per_million": 0.1,
+      "output_per_million": 4.0
+    }
+  }
+}
+```
+
+Click **Save changes** or press **Ctrl+S**. Monitoring changes restart the owned engine if it was running; appearance, timer, tray and startup preferences keep it running. Invalid numbers, paths and JSON are revealed with inline feedback and keyboard focus. Pending requests disable repeat submissions while navigation stays available. Unsaved edits stay on their tabs; **Reload** asks before discarding the current tab's edits and preserves edits made while loading. Exit offers **Review changes**, **Exit without saving**, and **Cancel**. Closing to the background keeps drafts in memory; they are not silently written to disk.
+
+Use **Ctrl+Tab / Ctrl+Shift+Tab** to change tabs, **Ctrl+1–5** to select one directly, and the usual arrow keys, typing and Enter inside dropdowns.
+
+Activity priority applies to the desktop engine. The original terminal interface manages its own publication. Timer and privacy settings remain shared. Process names and the Steam marker stay local and are not sent to Discord.
+
+## Tools
+
+**Doctor** checks setup and Discord connectivity. **Status** reads a one-time session/operational report. Both show actual output, including failures. The output area also holds recent engine errors. **Complete configuration** gives access to every original engine configuration field, including pricing maps and future-compatible JSON fields supported by this engine version. **Save changes** validates through the Rust engine before writing.
+
+**Open original terminal view** opens the upstream GitHub project's terminal interface with the same engine/settings. It pauses the desktop-owned engine first. Press **Q** in the terminal to close it; desktop monitoring resumes if it had been running. Unsaved settings must be saved or reloaded first. It refuses to take over another running engine.
+
+Version 1.3 fixes the launch error caused by output encodings being set on an unredirected terminal. Failed launches now restore desktop monitoring and leave the launcher usable for another attempt. **Create desktop shortcut** adds or updates the shortcut to this app's current folder.
+
+Close the original terminal with Q before using Exit in the desktop app.
+
+Reference buttons open this guide, the original docs, project folder or selected Codex home. The Codex wrapper is also retained:
+
+```powershell
+cd '.\Runtime'
+.\codex-discord-rich-presence-windows-x64.exe terminal-view
+.\codex-discord-rich-presence-windows-x64.exe codex --help
+```
+
+Stop the desktop engine before manually starting `terminal-view`; it rejects duplicate instances. Launching the runtime without arguments retains the original upstream takeover behavior. The original `discord-proof` command briefly publishes test activity and clears it; run it only when you want that external test.
+
+## Files, backup and recovery
+
+- `Codex Presence.exe`: native desktop app.
+- `Runtime`: modified original Rust engine, logos, icon, checksums and SPDX dependency bill of materials.
+- Source repository: desktop source, engine source, tests and original documentation, downloaded separately from GitHub.
+- `Data/app-settings.json`: desktop preferences, created when preferences are saved.
+- `Data/Backups`: previous presence configuration files, created before replacement.
+- `<Codex home>/discord-presence-config.json`: original shared presence configuration.
+- `<Codex home>/discord-presence-metrics.json`: latest original metrics snapshot.
+- `<Codex home>/discord-presence-history-cache.json`: derived historical usage cache. It avoids scanning unchanged inactive files on every restart, and is invalidated by source length or modification time. It contains derived usage/session metadata, never message transcripts. The engine rebuilds missing, invalid or outdated entries from the source files; active token/cost accounting still parses the complete active session.
+
+If another application edits the shared configuration, saving is rejected to preserve its edits. Click Reload, reapply your choices, and save. To restore a backup, exit the app first, copy the desired backup over `discord-presence-config.json`, and reopen. Do not replace Codex authentication files.
+
+Backups can be on another drive from configuration. File validation, backup and replacement run away from the UI thread. The app copies the previous file to its backup folder first, then atomically replaces configuration using a same-directory temporary file. Desktop preferences also use atomic replacement and exact backups under `Data/Backups/Preferences`. Damaged desktop preferences open with safe defaults and a warning, preserving the original file; technical details stay in Tools. Unchanged settings do not create extra backups. Version 1.9.0 retains schema 18 and existing presence preferences. Preserve your previous app/runtime and compatible configuration before replacing an installed version; do not overwrite a running executable.
+
+## Your own Discord application
+
+1. Open the [Discord developer portal](https://discord.com/developers/applications), choose **New Application**, and give it a name.
+2. In **General Information**, copy the **Application ID**. It is a public number, not a bot token or client secret.
+3. For artwork, open **Rich Presence → Art Assets** and upload your images. Discord recommends 1024 × 1024 images and converts asset keys to lowercase. Suggested keys: `codex-app` for the large image and `openai` for the small image. You can use your own keys or leave a field blank to omit that image. The General Information app icon and Rich Presence art assets are separate.
+4. In Codex Presence, open **Settings → Activity → Discord application**, choose **Custom**, and paste the ID. Expand **Custom application images** and enter the matching keys. Click **Save changes** with Discord desktop running.
+5. Choose **Default** and save to return to the original applications. Expand **Built-in application IDs** to view them; your saved custom configuration remains available.
+
+Local Rich Presence does not require creating a bot user, inviting a bot to a server, OAuth scopes, Administrator permissions, privileged intents, a public key or any token. Do not enter secrets in the ID field. The app validates the number's format; Discord determines whether the application exists and its artwork is available. A missing image does not grant permissions or prevent text from being shown. Registered application settings do not change this app's chosen Codex/ChatGPT heading or privacy controls. See [Discord's Rich Presence documentation](https://discord.com/developers/discord-social-sdk/development-guides/setting-rich-presence#rich-presence-without-authentication).
+
+## Troubleshooting
+
+No presence: open Discord desktop, enable its activity display setting, click Start, then run Doctor. A disconnected/retrying status means the IPC connection is not ready. Discord web alone cannot provide local IPC. No sessions: send a message in Codex, confirm the Codex home folder, and inspect Status. The app detects session activity; it does not change the Codex app itself.
+
+Stale dashboard: check whether the engine is stopped. Expired sessions disappear based on cutoff and retention preferences. Missing cost/model/credits: inspect complete session/metrics data; unsupported or missing telemetry cannot be invented.
+
+Can't save: check JSON syntax, numeric ranges and the footer error. Reload if another app changed the file. If the app is hidden, reopen its executable, including when the tray icon is disabled. If .NET is missing on another PC, install Microsoft's .NET 8 **Desktop Runtime x64**.
+
+Discord connection retries back off from 2 seconds to at most 15 seconds, and a 5-second heartbeat checks an idle connection. Changed activity is published on the next configured session poll. Discord may add its own display delay. A first scan or a changed large session takes longer than a cached restart; lowering the poll interval cannot remove Discord's display delay.
+
+## Build and verify
+
+Requires the pinned Rust toolchain, Visual Studio C++ Build Tools with Windows SDK, and .NET 8 SDK.
+
+```powershell
+.\scripts\build-desktop.ps1
+.\scripts\verify.ps1
+.\scripts\verify-desktop.ps1
+.\scripts\verify-desktop.ps1 -CrossVolume
+```
+
+The default build output is `.build/desktop` inside the repository. Pass an absolute `-OutputDirectory` to stage elsewhere; pass `-AppRoot` to verify that output. Desktop verification uses synthetic sessions with publication disabled. Each run checks 205 behaviors, including both heading toggles and parsed preview text, retained drafts, cross-tab merges, timer and usage settings, idle hiding/restoration, section navigation, edits during asynchronous saves, appearance without engine restart, all 40 style/theme/mode combinations at 460-pixel width, a real terminal launch/recovery, shortcut creation and background operation. Real startup registry entries are not changed. Cross-volume verification uses Windows TEMP on a different drive. Results and previews are under the chosen app root's `Data/Verification`. See `docs/desktop-release.md` for packaging and publication.
+
+## Remove
+
+Disable **Start with Windows** and **Start with Codex / ChatGPT in background**, then save. Choose Exit, then remove the shortcut and extracted app folder if desired. Shared presence configuration remains in your Codex home. Only remove presence-specific files there if you no longer use another presence client; leave sessions and authentication intact.
+
+## Attribution
+
+Created and maintained by Wrakeeb. Vibe coded with AI assistance. Required license and provenance notices are included in LICENSE.txt and NOTICE.md. Building locally does not publish automatically.
+
+## GitHub update checks
+
+Tools → Check for updates queries this product repository on demand. The UI stays responsive; checks time out after 12 seconds, handle offline/rate-limit states, ignore preview releases and never auto-install. Open the release page to review and download an update.
